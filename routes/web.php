@@ -17,4 +17,4 @@ Route::get('/airports', 'AirportsController@index');
 Route::post('/airports', 'AirportsController@store');
 Route::get('/airports/{id}', 'AirportsController@show');
 Route::patch('/airports/{id}', 'AirportsController@update');
-Route::delete('/airports/{id}', 'AirportsController@delete');
+Route::delete('/airports/{id}', 'AirportsController@destroy');
