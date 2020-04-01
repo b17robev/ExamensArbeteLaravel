@@ -64,13 +64,17 @@ class AirportsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Airport  $airport
-     * @return \Illuminate\Http\Response
+     * @param \Illuminate\Http\Request $request
+     * @param $id
+     * @return Response
      */
-    public function update(Request $request, Airport $airport)
+    public function update(Request $request, $id)
     {
-        //
+        $airport = Airport::find($id);
+
+        $airport->update($request->all());
+
+        return $airport;
     }
 
     /**
