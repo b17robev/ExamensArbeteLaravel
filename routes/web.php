@@ -14,4 +14,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/airports', 'AirportsController@index');
-
+Route::post('/airports', 'AirportsController@store');
+Route::patch('/airports/{id}', 'AirportsController@update');
+Route::delete('/airports/{id}', 'AirportsController@delete');

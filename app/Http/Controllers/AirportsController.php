@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Airport;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class AirportsController extends Controller
 {
@@ -75,11 +76,15 @@ class AirportsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Airport  $airport
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return Response
      */
-    public function destroy(Airport $airport)
+    public function destroy($id)
     {
-        //
+        $airport = Airport::find($id);
+
+        $airport->delete();
+
+        return new Response('Airport deleted', 200);
     }
 }
