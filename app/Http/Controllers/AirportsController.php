@@ -44,12 +44,25 @@ class AirportsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Airport  $airport
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return Response
      */
-    public function show(Airport $airport)
+    public function show($id)
     {
-        //
+        $before = microtime(true);
+        $airport = Airport::find($id);
+        $after = microtime(true);
+
+        $url = "http://localhost:8080/scrapper/index.php";
+        $result = $after - $before . "\n";
+
+        $this->httpPost($url, $result, "show");
+
+        if(!$airport) {
+            return new Response("Couldn't find airport with id of $id", 410);
+        }
+
+        return $airport;
     }
 
     /**
@@ -92,5 +105,17 @@ class AirportsController extends Controller
         $airport->delete();
 
         return new Response('Airport deleted', 200);
+    }
+
+    function httpPost($url, $data, $method)
+    {
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, "$method=$data");
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        return $response;
     }
 }
