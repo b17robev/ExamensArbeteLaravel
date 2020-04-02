@@ -36,9 +36,16 @@ class AirportsController extends Controller
      */
     public function store(Request $request)
     {
+        $before = microtime(true);
         $airport = Airport::create($request->all());
+        $after = microtime(true);
 
-        return $airport;
+        $url = "http://localhost:8080/scrapper/index.php";
+        $result = $after - $before . "\n";
+
+        $this->httpPost($url, $result, "store");
+
+        return new Response($airport, 200);
     }
 
     /**
@@ -57,10 +64,6 @@ class AirportsController extends Controller
         $result = $after - $before . "\n";
 
         $this->httpPost($url, $result, "show");
-
-        if(!$airport) {
-            return new Response("Couldn't find airport with id of $id", 410);
-        }
 
         return $airport;
     }
