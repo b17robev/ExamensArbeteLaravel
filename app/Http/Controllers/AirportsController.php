@@ -87,7 +87,14 @@ class AirportsController extends Controller
     {
         $airport = Airport::find($id);
 
+        $before = microtime(true);
         $airport->update($request->all());
+        $after = microtime(true);
+
+        $url = "http://localhost:8080/scrapper/index.php";
+        $result = $after - $before . "\n";
+
+        $this->httpPost($url, $result, "update");
 
         return $airport;
     }

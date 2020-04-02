@@ -14,4 +14,6 @@ class Airport extends Model
     ];
 
     protected $primaryKey = 'airport_id';
+
+    public $timestamps = false;
 }
