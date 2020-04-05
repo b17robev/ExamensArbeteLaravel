@@ -37,14 +37,20 @@ class AirportsController extends Controller
      */
     public function store(Request $request)
     {
+        $data = [];
+
+        $base_mem = memory_get_peak_usage();
         $before = microtime(true);
         $airport = Airport::create($request->all());
         $after = microtime(true);
+        $total_mem = memory_get_peak_usage();
 
-        $url = "http://localhost:8080/scrapper/index.php";
-        $result = $after - $before . "\n";
+        $data[] = $after - $before;
+        $data[] = $total_mem - $base_mem;
 
-        $this->httpPost($url, $result, "store");
+        $result = implode(',', $data) . "\n";
+
+        $this->httpPost(config('scraper.url'), $result, "store");
 
         return new Response($airport, 200);
     }
@@ -97,14 +103,20 @@ class AirportsController extends Controller
     {
         $airport = Airport::find($id);
 
+        $data = [];
+
+        $base_mem = memory_get_peak_usage();
         $before = microtime(true);
         $airport->update($request->all());
         $after = microtime(true);
+        $total_mem = memory_get_peak_usage();
 
-        $url = "http://localhost:8080/scrapper/index.php";
-        $result = $after - $before . "\n";
+        $data[] = $after - $before;
+        $data[] = $total_mem - $base_mem;
 
-        $this->httpPost($url, $result, "update");
+        $result = implode(',', $data) . "\n";
+
+        $this->httpPost(config('scraper.url'), $result, "update");
 
         return $airport;
     }
@@ -119,14 +131,20 @@ class AirportsController extends Controller
     {
         $airport = Airport::find($id);
 
+        $data = [];
+
+        $base_mem = memory_get_peak_usage();
         $before = microtime(true);
         $airport->delete();
         $after = microtime(true);
+        $total_mem = memory_get_peak_usage();
 
-        $url = "http://localhost:8080/scrapper/index.php";
-        $result = $after - $before . "\n";
+        $data[] = $after - $before;
+        $data[] = $total_mem - $base_mem;
 
-        $this->httpPost($url, $result, "destroy");
+        $result = implode(',', $data) . "\n";
+
+        $this->httpPost(config('scraper.url'), $result, "destroy");
 
         return new Response('Airport deleted', 200);
     }
