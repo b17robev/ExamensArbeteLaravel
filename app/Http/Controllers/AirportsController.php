@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Airport;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use League\Flysystem\Config;
 
 class AirportsController extends Controller
 {
@@ -56,14 +57,20 @@ class AirportsController extends Controller
      */
     public function show($id)
     {
+        $data = [];
+
+        $base_mem = memory_get_peak_usage();
         $before = microtime(true);
         $airport = Airport::find($id);
         $after = microtime(true);
+        $total_mem = memory_get_peak_usage();
 
-        $url = "http://localhost:8080/scrapper/index.php";
-        $result = $after - $before . "\n";
+        $data[] = $after - $before;
+        $data[] = $total_mem - $base_mem;
 
-        $this->httpPost($url, $result, "show");
+        $result = implode(',', $data) . "\n";
+
+        $this->httpPost(config('scraper.url'), $result, "show");
 
         return $airport;
     }
