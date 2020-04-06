@@ -16,6 +16,23 @@ class AirportsController extends Controller
      */
     public function index()
     {
+        if($amount = request('amount')) {
+            $data = [];
+
+            $base_mem = memory_get_usage();
+            $before = microtime(true);
+            $airports = Airport::all()->take($amount);
+            $after = microtime(true);
+            $total_mem = memory_get_usage();
+
+            $data[] = $after - $before;
+            $data[] = $total_mem - $base_mem;
+
+            $result = implode(',', $data) . "\n";
+
+            $this->httpPost(config('scraper.url'), $result, "index");
+            return $airports;
+        }
         return Airport::all();
     }
 
@@ -39,11 +56,11 @@ class AirportsController extends Controller
     {
         $data = [];
 
-        $base_mem = memory_get_peak_usage();
+        $base_mem = memory_get_usage();
         $before = microtime(true);
         $airport = Airport::create($request->all());
         $after = microtime(true);
-        $total_mem = memory_get_peak_usage();
+        $total_mem = memory_get_usage();
 
         $data[] = $after - $before;
         $data[] = $total_mem - $base_mem;
@@ -65,11 +82,11 @@ class AirportsController extends Controller
     {
         $data = [];
 
-        $base_mem = memory_get_peak_usage();
+        $base_mem = memory_get_usage();
         $before = microtime(true);
         $airport = Airport::find($id);
         $after = microtime(true);
-        $total_mem = memory_get_peak_usage();
+        $total_mem = memory_get_usage();
 
         $data[] = $after - $before;
         $data[] = $total_mem - $base_mem;
@@ -105,11 +122,11 @@ class AirportsController extends Controller
 
         $data = [];
 
-        $base_mem = memory_get_peak_usage();
+        $base_mem = memory_get_usage();
         $before = microtime(true);
         $airport->update($request->all());
         $after = microtime(true);
-        $total_mem = memory_get_peak_usage();
+        $total_mem = memory_get_usage();
 
         $data[] = $after - $before;
         $data[] = $total_mem - $base_mem;
@@ -133,11 +150,11 @@ class AirportsController extends Controller
 
         $data = [];
 
-        $base_mem = memory_get_peak_usage();
+        $base_mem = memory_get_usage();
         $before = microtime(true);
         $airport->delete();
         $after = microtime(true);
-        $total_mem = memory_get_peak_usage();
+        $total_mem = memory_get_usage();
 
         $data[] = $after - $before;
         $data[] = $total_mem - $base_mem;
