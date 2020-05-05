@@ -30,7 +30,8 @@ class AirportsController extends Controller
 
             $result = implode(',', $data) . "\n";
 
-            $this->httpPost(config('scraper.url'), $result, "index");
+            $this->writeToFile("index", $result);
+            
             return $airports;
         }
         return Airport::all();
@@ -67,7 +68,7 @@ class AirportsController extends Controller
 
         $result = implode(',', $data) . "\n";
 
-        $this->httpPost(config('scraper.url'), $result, "store");
+        $this->writeToFile("store", $result);
 
         return new Response($airport, 200);
     }
@@ -93,7 +94,7 @@ class AirportsController extends Controller
 
         $result = implode(',', $data) . "\n";
 
-        $this->httpPost(config('scraper.url'), $result, "show");
+        $this->writeToFile("show", $result);
 
         return $airport;
     }
@@ -133,7 +134,7 @@ class AirportsController extends Controller
 
         $result = implode(',', $data) . "\n";
 
-        $this->httpPost(config('scraper.url'), $result, "update");
+        $this->writeToFile("update", $result);
 
         return $airport;
     }
@@ -161,20 +162,36 @@ class AirportsController extends Controller
 
         $result = implode(',', $data) . "\n";
 
-        $this->httpPost(config('scraper.url'), $result, "destroy");
+        $this->writeToFile("destroy", $result);
 
         return new Response('Airport deleted', 200);
     }
 
-    function httpPost($url, $data, $method)
+    function writeToFile($file, $content)
     {
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, "$method=$data");
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($curl);
-        curl_close($curl);
+        $root = env('APP_ROOT');
+        $measurementsPath = $root . DIRECTORY_SEPARATOR. 'measurements' . DIRECTORY_SEPARATOR;
+        $actions = ['index', 'update', 'store', 'destroy', 'show'];
 
-        return $response;
+        if(!file_exists($root . DIRECTORY_SEPARATOR. 'measurements')) {
+            mkdir($root . DIRECTORY_SEPARATOR. 'measurements');
+        }
+
+        $files = array_diff(scandir($measurementsPath), array('.', '..'));
+        if(!count($files)) {
+            foreach($actions as $action)
+            {
+                if(!is_file($measurementsPath . $action . '.txt'))
+                {
+                    file_put_contents($measurementsPath . $action . '.txt', '');
+                }
+            }
+        }
+
+        $outputFile = $measurementsPath . $file . '.txt';
+
+        $fp=fopen($outputFile,"a");
+        fputs ($fp, $content);
+        fclose ($fp);
     }
 }
