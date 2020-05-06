@@ -30,8 +30,8 @@ class AirportsController extends Controller
 
             $result = implode(',', $data) . "\n";
 
-            $this->writeToFile("index", $result);
-            
+            $this->writeToFile(env('APP_ROOT'),"index", $result);
+
             return $airports;
         }
         return Airport::all();
@@ -68,7 +68,7 @@ class AirportsController extends Controller
 
         $result = implode(',', $data) . "\n";
 
-        $this->writeToFile("store", $result);
+        $this->writeToFile(env('APP_ROOT'),"store", $result);
 
         return new Response($airport, 200);
     }
@@ -94,7 +94,7 @@ class AirportsController extends Controller
 
         $result = implode(',', $data) . "\n";
 
-        $this->writeToFile("show", $result);
+        $this->writeToFile(env('APP_ROOT'),"show", $result);
 
         return $airport;
     }
@@ -134,7 +134,7 @@ class AirportsController extends Controller
 
         $result = implode(',', $data) . "\n";
 
-        $this->writeToFile("update", $result);
+        $this->writeToFile(env('APP_ROOT'),"update", $result);
 
         return $airport;
     }
@@ -162,14 +162,13 @@ class AirportsController extends Controller
 
         $result = implode(',', $data) . "\n";
 
-        $this->writeToFile("destroy", $result);
+        $this->writeToFile(env('APP_ROOT'),"destroy", $result);
 
         return new Response('Airport deleted', 200);
     }
 
-    function writeToFile($file, $content)
+    function writeToFile($root, $file, $content)
     {
-        $root = env('APP_ROOT');
         $measurementsPath = $root . DIRECTORY_SEPARATOR. 'measurements' . DIRECTORY_SEPARATOR;
         $actions = ['index', 'update', 'store', 'destroy', 'show'];
 
