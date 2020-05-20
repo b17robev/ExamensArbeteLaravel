@@ -21,7 +21,7 @@ class AirportsController extends Controller
 
             $base_mem = memory_get_usage();
             $before = microtime(true);
-            $airports = Airport::all()->take($amount);
+            $airports = Airport::take($amount)->get();
             $after = microtime(true);
             $total_mem = memory_get_usage();
 
